@@ -104,6 +104,10 @@ At this step we just need to create our configuration, it can be done as followi
 ```
 openstack coe cluster config test-cluster
 ```
+Update the KUBECONFIG environment variable to point to the newly created configuration:
+```
+export KUBECONFIG=~/wdir/config
+```
 Now it is time to deploy our first service. For that we'll use the
 [httpgo](https://github.com/dmwm/CMSKubernetes/tree/master/docker/httpgo) application/service.
 It represents a basic HTTP server written in Go language. Its docker image
