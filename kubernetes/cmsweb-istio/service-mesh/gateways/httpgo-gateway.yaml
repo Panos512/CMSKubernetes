@@ -1,0 +1,48 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: httpgo-gateway
+  namespace: http
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+  apiVersion: networking.istio.io/v1alpha3
+  kind: VirtualService
+  metadata:
+    name: httpgo-vs
+    namespace: http
+  spec:
+    hosts:
+    - "*"
+    gateways:
+    - httpgo-gateway
+    http:
+    - match:
+      - uri:
+          exact: /httpgo/
+      route:
+      - destination:
+          host: httpgo
+          port:
+            number: 8888
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: httpgo-dr
+spec:
+  host: httpgo.http.svc.cluster.local
+  trafficPolicy:
+    loadBalancer:
+      consistentHash:
+        httpCookie:
+          name: route
+          ttl: 172800s
